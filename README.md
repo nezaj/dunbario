@@ -4,6 +4,7 @@ Personal CRM for your community! See it [live][dunbario]
 ## Table of Contents
 * [Quickstart](#quickstart)
 * [Tests](#tests)
+* [Deploying](#deploying)
 
 ## Quickstart
 ```
@@ -25,6 +26,12 @@ make test
 
 # Run lint and tests in one go
 make check
+```
+
+### Deploying
+Currently deploying to heroku
+```
+make deploy
 ```
 
 [dunbario]: https://dunbario.herokuapp.com/
