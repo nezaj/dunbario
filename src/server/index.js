@@ -1,3 +1,5 @@
+/* Entry-point for our express server */
+
 const path = require('path')
 
 const bodyParser = require('body-parser')

@@ -1,4 +1,4 @@
-// Entry point for our react-app
+/* Entry point for our create-react-app (webpack) server */
 
 import React from 'react';
 import ReactDOM from 'react-dom';
