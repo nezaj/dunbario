@@ -23,7 +23,7 @@ dev-server:
 
 prod-server:
 	@echo "Starting production optimized server..."
-	make build && node src/server/index.js --env prod
+	node src/server/index.js --env prod
 
 check:
 	$(MAKE) lint

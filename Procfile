@@ -1,1 +1,1 @@
-web: make prod-server
+web: make build && make prod-server
