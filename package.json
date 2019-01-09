@@ -21,5 +21,13 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "body-parser": "1.18.3",
+    "commander": "2.19.0",
+    "cors": "2.8.5",
+    "express": "4.16.4",
+    "morgan": "1.9.1",
+    "nodemon": "1.18.9"
+  }
 }
