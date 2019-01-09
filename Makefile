@@ -7,7 +7,8 @@ NODEMON = $(NODE_BIN)/nodemon
 .PHONY: \
 	build \
 	dev-client dev-server prod-server \
-	check lint test-client
+	check lint test-client \
+	deploy
 
 build:
 	@echo "Building project..."
@@ -37,3 +38,8 @@ lint:
 test-client:
 	@echo "Running client test suite..."
 	CI=true npm test
+
+deploy:
+	@echo "Deploying to heroku..."
+	$(MAKE) check
+	git push heroku master
