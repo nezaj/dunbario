@@ -1,0 +1,99 @@
+.app-container {
+  position: relative;
+}
+
+.view-container {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  overflow: scroll;
+}
+
+/* Shared rules */
+.people-view-container,
+.calls-view-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3em;
+}
+
+.category-container,
+.calls-view-container {
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+/* New Person Modal */
+.person-modal-wrapper {
+  position: absolute;
+  top: 5vh;
+  left: 5vw;
+  display: flex;
+  background-color: white;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-modal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 2em;
+  padding: 1em 2em;
+}
+
+.person-modal-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.person-modal-header-close {
+  color: grey;
+  font-size: 1.0em;
+  position: absolute;
+  right: -0.5em;
+}
+
+.person-modal-header-close:hover {
+  cursor: pointer;
+  background-color: lightGrey;
+  padding: 2px;
+}
+
+.person-modal-form {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.person-input {
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  border-radius: 2px;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+}
+
+.submit-new-person {
+  padding: 0.5em 1em;
+  font-size: 1.5em;
+  border-radius: 1em;
+}
+
+.submit-new-person:hover {
+  cursor: pointer;
+}

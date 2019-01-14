@@ -1,0 +1,22 @@
+.category-header {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.person-row-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 1.0em;
+    line-height: 1.5em;
+}
+
+.new-person {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 1em;
+}
+
+.new-person:hover {
+  cursor: pointer;
+}
