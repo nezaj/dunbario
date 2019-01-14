@@ -1,9 +1,16 @@
 import React from 'react';
 import './CallsView.css';
-
 import { friendlyCall } from '../utils'
 
-const CallsView = ({isVisible, name, calls}) => {
+function renderEmptyCallsText(name, category) {
+  return `Log some calls with ${name} (${category})`
+}
+
+function renderCallsHeader(name, category) {
+  return `Calls with ${name} (${category})`
+}
+
+const CallsView = ({isVisible, name, category, calls}) => {
   const renderedCalls = calls
     .sort((a, b) => b.date - a.date)
     .map(call =>
@@ -19,12 +26,12 @@ const CallsView = ({isVisible, name, calls}) => {
       className='calls-view-container'
       style={{'visibility': isVisible ? 'visible' : 'hidden'}}
     >
-      <h1 className='calls-view-header'>Calls with {name}</h1>
+      <h1 className='calls-view-header'>{renderCallsHeader(name, category)}</h1>
       <div className='calls-container'>
         {renderedCalls.length > 0
           ? renderedCalls
           : <div className='empty-calls'>
-              Log some calls with your loved one!
+              {renderEmptyCallsText(name, category)}
             </div>
         }
       </div>

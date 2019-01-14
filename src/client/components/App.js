@@ -3,17 +3,18 @@ import './App.css';
 
 import PeopleView from './PeopleView'
 import CallsView from './CallsView'
+import NewPersonModal from './NewPersonModal'
+import { CATEGORY_ORDER } from '../data'
 import { capitalize } from '../utils'
 
 /* Generated Data */
-
 let MAX_PERSON_ID = 0
 let MAX_CALL_ID = 0
 
 const mom = createPerson('Mom', '01/01/19', 'family')
-const gary = createPerson('Gary', '01/03/19', 'family')
+const gary = createPerson('Gary', null, 'family')
 const stepan = createPerson('stepan', '12/26/18', 'friends')
-const people = [mom, gary, stepan].sort((a, b) => a.lastCall - b.lastCall)
+const initialPeople = [mom, gary, stepan]
 
 const momCall_1 = createCall(
   mom.id, mom.name, '12/26/18', 'Chill call, nothing special'
@@ -25,20 +26,25 @@ const momCall_3 = createCall(
   mom.id, mom.name, '01/01/19', 'New years chat!'
 )
 
-const calls = {
+const initialCalls = {
   [mom.id]: [momCall_1, momCall_2, momCall_3],
   [gary.id]: [],
   [stepan.id]: [],
 }
 
 /* Factory functions */
+function getOrCreateCategory(name) {
+  const clean = capitalize(name)
+  if (!CATEGORY_ORDER[clean]) { CATEGORY_ORDER[clean] = Object.keys(CATEGORY_ORDER).length + 1 }
+  return clean
+}
 
 function createPerson(name, date, category) {
   return {
     id: ++MAX_PERSON_ID,
     name: capitalize(name),
-    lastCall: new Date(date).getTime(),
-    category: capitalize(category),
+    lastCall: date ? new Date(date).getTime() : null,
+    category: getOrCreateCategory(category),
   }
 }
 
@@ -58,10 +64,16 @@ function getPerson(personID, people) {
   return people.find(p => p.id === personID)
 }
 
+/* TODOS
+ * (Handle loading/success/fail) Add enum for handling loading state on initial data fetch
+*/
+
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      people: initialPeople,
+      calls: initialCalls,
       displayNewPersonModal: false,
       callsVisible: false,
       displayID: 1,
@@ -80,68 +92,52 @@ class App extends Component {
     this.setState({displayNewPersonModal: false})
   }
 
+  onSubmitPersonModal = ({personName, personCategory}) => {
+    const {calls, people} = this.state
+    const newPerson = createPerson(personName, null, personCategory)
+    this.setState({
+      displayNewPersonModal: false,
+      people: people.concat(newPerson),
+      calls: {...calls, [newPerson.id]: []},
+    })
+  }
+
   render() {
-    const {displayID, displayNewPersonModal, callsVisible} = this.state
-    const displayName = getPerson(displayID, people).name
-    const displayCalls = calls[displayID]
+    const {
+      calls, callsVisible,
+      displayID, displayNewPersonModal,
+      people
+    } = this.state
+    const displayedPerson = getPerson(displayID, people)
+    const displayedCalls = calls[displayID]
     return (
       <div className="app-container">
         <div className="view-container">
           <PeopleView
             people={people}
-            onClickPersonRow={this.onClickPersonRow}
             onClickNewPerson={this.onClickNewPerson}
+            onClickPersonRow={this.onClickPersonRow}
           />
           <CallsView
             isVisible={callsVisible}
-            name={displayName}
-            calls={displayCalls}
+            name={displayedPerson.name}
+            category={displayedPerson.category}
+            calls={displayedCalls}
           />
         </div>
         { displayNewPersonModal &&
-          <NewPersonModal onClose={this.onClosePersonModal} />
+          <NewPersonModal
+            onSubmitPersonModal={this.onSubmitPersonModal}
+            onClose={this.onClosePersonModal}
+          />
         }
       </div>
     );
   }
 }
 
-class NewPersonModal extends Component {
-  render() {
-    const {onClose} = this.props;
-    return (
-      <div className="person-modal-wrapper">
-        <div className="person-modal-container">
-          <div className="person-modal-header">
-            <h3 className="person-modal-header-text">
-              Add a new person!
-            </h3>
-            <h3 className="person-modal-header-close" onClick={onClose}>
-              X
-            </h3>
-          </div>
-          <div className="person-modal-form">
-            <input
-              className="person-input"
-              type="text"
-              name="personName"
-              placeholder="Name..."></input>
-            <input
-              className="person-input"
-              type="text"
-              name="personCategory"
-              placeholder="Category..."></input>
-            <input
-              className="person-input"
-              type="text"
-              name="lastCall"
-              placeholder="Last time called..."></input>
-            <button className="submit-new-person">Submit</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
+export default App
 
-export default App;
+export {
+  CATEGORY_ORDER
+}

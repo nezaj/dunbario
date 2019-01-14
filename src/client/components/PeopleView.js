@@ -1,12 +1,10 @@
 import React from 'react';
 import './PeopleView.css';
 
+import { CATEGORY_ORDER } from '../data'
 import { friendlyCall } from '../utils'
 
-const CATEGORY_ORDER = {
-  'Family': 1,
-  'Friends': 2,
-}
+const NO_CALLS_TEXT = 'N/A'
 
 /* Helpers */
 
@@ -33,7 +31,8 @@ function groupByOrderedCategory(data) {
 /* Components */
 
 const PeopleView = ({people, onClickPersonRow, onClickNewPerson}) => {
-  const grouped = groupByOrderedCategory(people)
+  const sortedPeople = people.sort((a, b) => a.lastCall - b.lastCall)
+  const grouped = groupByOrderedCategory(sortedPeople)
   const categories = grouped
     .map(([category, categoryPeople], idx) =>
       <CategoryPeople
@@ -76,7 +75,7 @@ const PersonRow = ({name, lastCall, onClick}) => (
   <div className='person-row-container' onClick={onClick}>
     <div className='person-name'>{name}</div>
     <div className='person-last-call'>
-      {friendlyCall(lastCall)}
+      {lastCall ? friendlyCall(lastCall) : NO_CALLS_TEXT}
     </div>
   </div>
 )
