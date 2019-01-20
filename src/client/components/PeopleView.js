@@ -47,7 +47,7 @@ const PeopleView = ({people, onClickPersonRow, onClickNewPerson}) => {
     <div className="people-view-container">
       {categories}
       <button className="new-person" onClick={onClickNewPerson}>
-        Add New Person
+        + Add New Person
       </button>
     </div>
   )

@@ -1,7 +1,3 @@
-.app-container {
-  position: relative;
-}
-
 .view-container {
   display: flex;
   flex-wrap: wrap;
@@ -22,4 +18,18 @@
 .category-container {
   width: 50%;
   margin-bottom: 10px;
+}
+
+.log-call {
+  display: flex;
+  margin: 10px auto;
+  font-size: 1em;
+  padding: 10px;
+  outline: none;
+  border-radius: 1em;
+}
+
+.log-call:hover {
+  cursor: pointer;
+  background-color: lightGrey;
 }

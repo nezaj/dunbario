@@ -1,0 +1,36 @@
+.call-modal-form {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.call-input {
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  border-radius: 2px;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+}
+
+.call-label {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.call-modal-error {
+  color: red;
+  margin-bottom: 5px;
+}
+
+.submit-new-call {
+  padding: 0.5em 1em;
+  font-size: 1.5em;
+  border-radius: 1em;
+  background-color: lightGrey !important;
+}
+
+.submit-new-call:hover {
+  cursor: pointer;
+  background-color: grey !important;
+}

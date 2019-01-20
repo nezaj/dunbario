@@ -3,7 +3,7 @@ import './App.css';
 
 import PeopleView from './PeopleView'
 import CallsView from './CallsView'
-import NewPersonModal from './NewPersonModal'
+import { NewCallModal, NewPersonModal } from './modals'
 import { CATEGORY_ORDER } from '../data'
 import { capitalize } from '../utils'
 
@@ -17,6 +17,8 @@ const stepan = createPerson('stepan', '12/26/18', 'friends')
 
 const initialPeople = [mom, gary, stepan]
 const initialArchive = []
+
+const DEFAULT_CALL_CONTENT = 'No logged info on this call'
 
 const momCall_1 = createCall(
   mom.id, mom.name, '12/26/18', 'Chill call, nothing special'
@@ -55,8 +57,8 @@ function createCall(personID, personName, date, content) {
     id: ++MAX_CALL_ID,
     personID,
     personName,
-    date: new Date(date),
-    content,
+    date: (date && new Date(date)) || new Date(),
+    content: content || DEFAULT_CALL_CONTENT,
   }
 }
 
@@ -78,18 +80,35 @@ class App extends Component {
       people: initialPeople,
       calls: initialCalls,
       displayNewPersonModal: false,
+      displayNewCallModal: false,
       callsVisible: false,
       displayID: null,
     }
+  }
+
+  /* UI Handlers */
+
+  onClickNewPerson = () => {
+    this.setState({displayNewPersonModal: true})
+  }
+
+  onClickNewCall = () => {
+    this.setState({displayNewCallModal: true})
+  }
+
+  onClosePersonModal = () => {
+    this.setState({displayNewPersonModal: false})
+  }
+
+  onCloseCallModal = () => {
+    this.setState({displayNewCallModal: false})
   }
 
   onClickPersonRow = (displayID) => {
     this.setState({callsVisible: true, displayID})
   }
 
-  onClickNewPerson = () => {
-    this.setState({displayNewPersonModal: true})
-  }
+  /* Actions */
 
   onArchive = (id) => {
     const {archived, people} = this.state
@@ -116,10 +135,6 @@ class App extends Component {
     })
   }
 
-  onClosePersonModal = () => {
-    this.setState({displayNewPersonModal: false})
-  }
-
   onSubmitPersonModal = ({personName, personCategory}) => {
     const {calls, people} = this.state
     const newPerson = createPerson(personName, null, personCategory)
@@ -130,16 +145,34 @@ class App extends Component {
     })
   }
 
+  onSubmitCallModal = ({personID, date, content}) => {
+    const {calls, people} = this.state
+    const person = people.find(p => p.id === parseInt(personID))
+    const newCall = createCall(person.id, person.name, date, content)
+    const newPersonCalls = calls[person.id].concat(newCall)
+    const newCalls = {...calls, [person.id]: newPersonCalls}
+    this.setState({
+      displayNewCallModal: false,
+      calls: newCalls,
+    })
+  }
+
   render() {
     const {
       calls, callsVisible,
-      displayID, displayNewPersonModal,
+      displayID, displayNewPersonModal, displayNewCallModal,
       people
     } = this.state
     const displayedPerson = getPerson(displayID, people) || {}
     const displayedCalls = calls[displayID] || []
     return (
       <div className="app-container">
+        <button
+          className="log-call"
+          onClick={this.onClickNewCall}
+        >
+          + Log Call
+        </button>
         <div className="view-container">
           <PeopleView
             people={people}
@@ -155,6 +188,13 @@ class App extends Component {
             onEditPersonName={this.onEditPersonName}
           />
         </div>
+        { displayNewCallModal &&
+          <NewCallModal
+            onSubmitCallModal={this.onSubmitCallModal}
+            onClose={this.onCloseCallModal}
+            people={people}
+          />
+        }
         { displayNewPersonModal &&
           <NewPersonModal
             onSubmitPersonModal={this.onSubmitPersonModal}

@@ -1,0 +1,47 @@
+.fullscreen-modal-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-modal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 2em;
+  padding: 1em 2em;
+}
+
+.fullscreen-modal-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.fullscreen-modal-header-close {
+  color: grey;
+  font-size: 1.0em;
+  position: absolute;
+  right: -0.5em;
+}
+
+.fullscreen-modal-header-close:hover {
+  cursor: pointer;
+  color: black;
+  background-color: lightGrey;
+  padding: 2px;
+}

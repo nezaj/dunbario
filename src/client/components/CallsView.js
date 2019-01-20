@@ -56,35 +56,39 @@ class CallsView extends Component {
         className='calls-view-container'
         style={{'visibility': isVisible ? 'visible' : 'hidden'}}
       >
-        <div className='calls-view-header'>
-          {!isEditingName
-            ?
-              <>
-                <h1>{renderCallsHeader(name, category)}</h1>
-                <button
-                  className='edit-person'
-                  onClick={this.startEdit}>
-                  Edit
-                </button>
-              </>
-            :
-              <>
-                <form onSubmit={this.onSubmitEdit}>
-                  <input
-                    type="text"
-                    name='editName'
-                    value={editName}
-                    onChange={this.onEditChange}>
-                  </input>
-                  <input type="submit" value="Confirm"></input>
-                </form>
-                <button
-                  onClick={() => this.setState({isEditingName: false})}>
-                  Cancel
-                </button>
-              </>
-          }
-        </div>
+        {!isEditingName
+          ?
+            <div className='calls-view-header'>
+              <h1>{renderCallsHeader(name, category)}</h1>
+              <button
+                className='edit-field edit-button'
+                onClick={this.startEdit}>
+                Edit
+              </button>
+            </div>
+          :
+            <div className="edit-form">
+              <form onSubmit={this.onSubmitEdit}>
+                <input
+                  className='edit-field'
+                  type="text"
+                  name='editName'
+                  value={editName}
+                  onChange={this.onEditChange}>
+                </input>
+                <input
+                  className='edit-field edit-button'
+                  type="submit"
+                  value="Confirm">
+                </input>
+              </form>
+              <button
+                className='edit-field edit-button'
+                onClick={() => this.setState({isEditingName: false})}>
+                Cancel
+              </button>
+            </div>
+        }
         <div className='calls-container'>
           {renderedCalls.length > 0
             ? renderedCalls
