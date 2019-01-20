@@ -76,7 +76,12 @@ class CallsView extends Component {
                     value={editName}
                     onChange={this.onEditChange}>
                   </input>
+                  <input type="submit" value="Confirm"></input>
                 </form>
+                <button
+                  onClick={() => this.setState({isEditingName: false})}>
+                  Cancel
+                </button>
               </>
           }
         </div>
