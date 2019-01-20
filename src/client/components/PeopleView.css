@@ -11,6 +11,10 @@
     line-height: 1.5em;
 }
 
+.person-row-container:hover {
+  cursor: pointer;
+}
+
 .new-person {
   padding: 10px;
   font-size: 1em;
@@ -19,4 +23,5 @@
 
 .new-person:hover {
   cursor: pointer;
+  background-color: lightGrey;
 }

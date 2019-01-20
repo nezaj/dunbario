@@ -1,7 +1,5 @@
 ### Features
 Front-end
-* User can remove person (on front-end)
-* User can edit person (on front-end)
 * User can add call (on front-end)
 * User can remove call (on front-end)
 * User can edit call (on front-end)

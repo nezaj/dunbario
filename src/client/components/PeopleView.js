@@ -42,6 +42,7 @@ const PeopleView = ({people, onClickPersonRow, onClickNewPerson}) => {
         onClickPersonRow={onClickPersonRow}
       />
     )
+
   return (
     <div className="people-view-container">
       {categories}
@@ -57,27 +58,30 @@ const CategoryPeople = ({category, people, onClickPersonRow}) => {
     .map(person =>
       <PersonRow
         key={person.id}
-        onClick={() => onClickPersonRow(person.id)}
+        onClickRow={() => onClickPersonRow(person.id)}
         name={person.name}
         lastCall={person.lastCall}
       />
     )
 
   return (
-    <div className='category-container'>
-      <h1 className='category-header'>{category}</h1>
-      <div className='people-container'>{rows}</div>
-    </div>
+    people.length > 0 &&
+      <div className='category-container'>
+        <h1 className='category-header'>{category}</h1>
+        <div className='people-container'>{rows}</div>
+      </div>
   )
 }
 
-const PersonRow = ({name, lastCall, onClick}) => (
-  <div className='person-row-container' onClick={onClick}>
-    <div className='person-name'>{name}</div>
-    <div className='person-last-call'>
-      {lastCall ? friendlyCall(lastCall) : NO_CALLS_TEXT}
+const PersonRow = ({name, lastCall, onClickRow}) => {
+  return (
+    <div className='person-row-container' onClick={onClickRow}>
+      <div className='person-name'>{name}</div>
+      <div className='person-last-call'>
+        {lastCall ? friendlyCall(lastCall) : NO_CALLS_TEXT}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default PeopleView

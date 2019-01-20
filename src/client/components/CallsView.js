@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './CallsView.css';
 import { friendlyCall } from '../utils'
 
@@ -10,33 +10,92 @@ function renderCallsHeader(name, category) {
   return `Calls with ${name} (${category})`
 }
 
-const CallsView = ({isVisible, name, category, calls}) => {
-  const renderedCalls = calls
-    .sort((a, b) => b.date - a.date)
-    .map(call =>
-      <Call
-        key={call.id}
-        name={call.personName}
-        date={call.date}
-        content={call.content}
-      />
-    )
-  return (
-    <div
-      className='calls-view-container'
-      style={{'visibility': isVisible ? 'visible' : 'hidden'}}
-    >
-      <h1 className='calls-view-header'>{renderCallsHeader(name, category)}</h1>
-      <div className='calls-container'>
-        {renderedCalls.length > 0
-          ? renderedCalls
-          : <div className='empty-calls'>
-              {renderEmptyCallsText(name, category)}
-            </div>
-        }
+class CallsView extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isEditingName: false,
+      editName: props.person.name,
+    }
+  }
+
+  startEdit = () => {
+    this.setState({isEditingName: true})
+  }
+
+  onEditChange = (e) => {
+    const editName = e.target.value
+    this.setState({editName})
+  }
+
+  onSubmitEdit = (e) => {
+    e.preventDefault()
+    const {onEditPersonName, person} = this.props
+    const newName = e.target.editName.value
+    onEditPersonName(person.id, newName)
+    this.setState({isEditingName: false})
+  }
+
+  render() {
+    const {isVisible, person, calls, onClickArchive} = this.props
+    const {isEditingName, editName} = this.state
+    const {name, category} = person
+    const renderedCalls = calls
+      .sort((a, b) => b.date - a.date)
+      .map(call =>
+        <Call
+          key={call.id}
+          name={call.personName}
+          date={call.date}
+          content={call.content}
+        />
+      )
+
+    return (
+      <div
+        className='calls-view-container'
+        style={{'visibility': isVisible ? 'visible' : 'hidden'}}
+      >
+        <div className='calls-view-header'>
+          {!isEditingName
+            ?
+              <>
+                <h1>{renderCallsHeader(name, category)}</h1>
+                <button
+                  className='edit-person'
+                  onClick={this.startEdit}>
+                  Edit
+                </button>
+              </>
+            :
+              <>
+                <form onSubmit={this.onSubmitEdit}>
+                  <input
+                    type="text"
+                    name='editName'
+                    value={editName}
+                    onChange={this.onEditChange}>
+                  </input>
+                </form>
+              </>
+          }
+        </div>
+        <div className='calls-container'>
+          {renderedCalls.length > 0
+            ? renderedCalls
+            : <div className='empty-calls'>
+                {renderEmptyCallsText(name, category)}
+              </div>
+          }
+        </div>
+        <button
+          className='archive-person'
+          onClick={() => onClickArchive(person.id)}>
+          Archive Person
+        </button>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 const Call = ({name, date, content}) => (

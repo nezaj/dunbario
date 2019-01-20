@@ -14,7 +14,9 @@ let MAX_CALL_ID = 0
 const mom = createPerson('Mom', '01/01/19', 'family')
 const gary = createPerson('Gary', null, 'family')
 const stepan = createPerson('stepan', '12/26/18', 'friends')
+
 const initialPeople = [mom, gary, stepan]
+const initialArchive = []
 
 const momCall_1 = createCall(
   mom.id, mom.name, '12/26/18', 'Chill call, nothing special'
@@ -72,11 +74,12 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      archived: initialArchive,
       people: initialPeople,
       calls: initialCalls,
       displayNewPersonModal: false,
       callsVisible: false,
-      displayID: 1,
+      displayID: null,
     }
   }
 
@@ -86,6 +89,31 @@ class App extends Component {
 
   onClickNewPerson = () => {
     this.setState({displayNewPersonModal: true})
+  }
+
+  onArchive = (id) => {
+    const {archived, people} = this.state
+    const idx = people.map(p => p.id).indexOf(id)
+    const person = this.state[idx]
+
+    this.setState({
+      archived: archived.concat(person),
+      callsVisible: false,
+      displayID: null,
+      people: people.slice(0, idx).concat(people.slice(idx + 1))
+    })
+  }
+
+  onEditPersonName = (id, newName) => {
+    const {people} = this.state
+    const idx = people.map(p => p.id).indexOf(id)
+    const person = people[idx]
+    const edited = {...person, name: newName}
+    this.setState({
+      people: people.slice(0, idx)
+        .concat(edited)
+        .concat(people.slice(idx + 1))
+    })
   }
 
   onClosePersonModal = () => {
@@ -108,8 +136,8 @@ class App extends Component {
       displayID, displayNewPersonModal,
       people
     } = this.state
-    const displayedPerson = getPerson(displayID, people)
-    const displayedCalls = calls[displayID]
+    const displayedPerson = getPerson(displayID, people) || {}
+    const displayedCalls = calls[displayID] || []
     return (
       <div className="app-container">
         <div className="view-container">
@@ -119,10 +147,12 @@ class App extends Component {
             onClickPersonRow={this.onClickPersonRow}
           />
           <CallsView
+            key={displayID}
             isVisible={callsVisible}
-            name={displayedPerson.name}
-            category={displayedPerson.category}
+            person={displayedPerson}
             calls={displayedCalls}
+            onClickArchive={this.onArchive}
+            onEditPersonName={this.onEditPersonName}
           />
         </div>
         { displayNewPersonModal &&

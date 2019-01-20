@@ -1,6 +1,7 @@
 .calls-view-header {
   width: 100%;
   margin-bottom: 10px;
+  display: flex;
 }
 
 .calls-container {
@@ -9,4 +10,29 @@
 
 .call-container {
   margin-bottom: 10px;
+}
+
+.archive-person {
+  font-size: 1.0em;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 1em;
+}
+
+.archive-person:hover {
+  cursor: pointer;
+  background-color: lightGrey;
+}
+
+.edit-person {
+  font-size: 1.0em;
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.edit-person:hover {
+  cursor: pointer;
+  background-color: lightGrey;
 }
