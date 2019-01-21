@@ -28,10 +28,22 @@ function groupByOrderedCategory(data) {
     .map(cat => [ cat, grouped[cat] ])
 }
 
+function getLastCall(calls) {
+  const clone = [...calls]
+  const last = clone.sort((a, b) => b.date.getTime() - a.date.getTime())[0]
+  return last && last.date
+}
+
 /* Components */
 
 const PeopleView = ({people, onClickPersonRow, onClickNewPerson}) => {
-  const sortedPeople = people.sort((a, b) => a.lastCall - b.lastCall)
+  const sortedPeople = people
+    .map(p => {
+      const clone = {...p}
+      clone.lastCall = getLastCall(clone.calls)
+      return clone
+    })
+    .sort((a, b) => a.lastCall - b.lastCall)
   const grouped = groupByOrderedCategory(sortedPeople)
   const categories = grouped
     .map(([category, categoryPeople], idx) =>

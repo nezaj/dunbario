@@ -37,13 +37,9 @@ class CallsView extends Component {
   }
 
   render() {
-    const {
-      isVisible,
-      person, calls,
-      onClickArchive, onCallDelete,
-    } = this.props
+    const {isVisible, person, onClickArchive, onCallDelete} = this.props
     const {isEditingName, editName} = this.state
-    const {name, category} = person
+    const {name, category, calls} = person
     const renderedCalls = calls
       .sort((a, b) => b.date - a.date)
       .map(call =>
@@ -120,9 +116,12 @@ class Call extends Component {
     }
   }
 
-  toggleConfirmDelete = () => {
-    const {confirmDelete} = this.state
-    this.setState({confirmDelete: !confirmDelete})
+  hideConfirmDelete = () => {
+    this.setState({confirmDelete: false})
+  }
+
+  displayConfirmDelete = () => {
+    this.setState({confirmDelete: true})
   }
 
   render() {
@@ -130,13 +129,13 @@ class Call extends Component {
     const {confirmDelete} = this.state
     return (
       <div className='call-container'>
-        <div className='call-header'>
+        <div className='call-header' onMouseLeave={this.hideConfirmDelete}>
           <h3>Called {name} {friendlyCall(date)}</h3>
           <div className='call-buttons'>
             {!confirmDelete
               ? <button
                   className='call-button'
-                  onClick={this.toggleConfirmDelete}>
+                  onClick={this.displayConfirmDelete}>
                   Delete
                 </button>
               :
@@ -148,7 +147,7 @@ class Call extends Component {
                   </button>
                   <button
                     className='call-button'
-                    onClick={this.toggleConfirmDelete}>
+                    onClick={this.hideConfirmDelete}>
                     Cancel
                   </button>
                 </>
