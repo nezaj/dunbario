@@ -37,7 +37,11 @@ class CallsView extends Component {
   }
 
   render() {
-    const {isVisible, person, calls, onClickArchive} = this.props
+    const {
+      isVisible,
+      person, calls,
+      onClickArchive, onCallDelete,
+    } = this.props
     const {isEditingName, editName} = this.state
     const {name, category} = person
     const renderedCalls = calls
@@ -48,6 +52,7 @@ class CallsView extends Component {
           name={call.personName}
           date={call.date}
           content={call.content}
+          onCallDelete={() => onCallDelete(person.id, call.id)}
         />
       )
 
@@ -107,13 +112,55 @@ class CallsView extends Component {
   }
 }
 
-const Call = ({name, date, content}) => (
-  <div className='call-container'>
-    <h3 className='call-header'>Called {name} {friendlyCall(date)}</h3>
-    <div className='call-content'>
-      {content}
-    </div>
-  </div>
-)
+class Call extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      confirmDelete: false,
+    }
+  }
+
+  toggleConfirmDelete = () => {
+    const {confirmDelete} = this.state
+    this.setState({confirmDelete: !confirmDelete})
+  }
+
+  render() {
+    const {name, date, content, onCallDelete} = this.props
+    const {confirmDelete} = this.state
+    return (
+      <div className='call-container'>
+        <div className='call-header'>
+          <h3>Called {name} {friendlyCall(date)}</h3>
+          <div className='call-buttons'>
+            {!confirmDelete
+              ? <button
+                  className='call-button'
+                  onClick={this.toggleConfirmDelete}>
+                  Delete
+                </button>
+              :
+                <>
+                  <button
+                    className='call-button confirm-delete-call-button'
+                    onClick={onCallDelete}>
+                    Confirm Delete
+                  </button>
+                  <button
+                    className='call-button'
+                    onClick={this.toggleConfirmDelete}>
+                    Cancel
+                  </button>
+                </>
+            }
+          </div>
+        </div>
+        <div className='call-content'>
+          {content}
+        </div>
+      </div>
+    )
+  }
+}
 
 export default CallsView

@@ -1,7 +1,6 @@
 ### Features
 Front-end
-* User can add call (on front-end)
-* User can remove call (on front-end)
+* Add updator for personCalls
 * User can edit call (on front-end)
 
 Back-end

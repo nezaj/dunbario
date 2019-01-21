@@ -13,6 +13,36 @@
   margin-bottom: 10px;
 }
 
+.call-header {
+  display: flex;
+}
+
+.call-header:hover .call-buttons {
+  visibility: visible;
+}
+
+.call-buttons {
+  visibility: hidden;
+}
+
+.call-button {
+  margin-left: 1em;
+  font-size: 0.7em;
+  padding: 5px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.confirm-delete-call-button:hover {
+  background-color: red !important;
+  color: white;
+}
+
+.call-button:hover {
+  cursor: pointer;
+  background-color: lightGrey;
+}
+
 .archive-person {
   font-size: 1.0em;
   padding: 10px;
