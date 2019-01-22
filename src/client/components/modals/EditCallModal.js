@@ -3,24 +3,22 @@ import React, { Component } from 'react'
 import { format } from 'date-fns'
 
 import FullScreenModal from './FullScreenModal'
+import { friendlyCall } from '../../utils'
 import './CallModal.css'
 
-class NewCallModal extends Component {
+class EditCallModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      errors: {},
-      dateValue: format(Date.now(), 'YYYY-MM-DD'),
-      selectValue: '-1',
-      contentValue: '',
+      dateValue: format(props.call.date, 'YYYY-MM-DD'),
+      contentValue: props.call.content,
     }
   }
 
   onSubmit = (e) => {
     e.preventDefault()
-    const {onSubmitNewCall} = this.props
-
-    const personID = e.target.personID.value
+    const {onSubmitEditCall, call} = this.props
+    const personID = call.personID
 
     // date input display values in UTC timezone but returns back timezone
     // adjusted value. So we add back in our timezone offset so that the value
@@ -31,19 +29,8 @@ class NewCallModal extends Component {
     // console.log('date', date)
 
     const content = e.target.content.value
-
-    let errors = {}
-    if (personID === '-1') {errors['personID'] = 'Please select a person'}
-
-    if (Object.keys(errors).length > 0) {
-      this.setState({errors})
-    } else {
-      onSubmitNewCall({
-        personID,
-        date,
-        content,
-      })
-    }
+    const editedCall = {...call, date, content}
+    onSubmitEditCall({personID, editedCall})
   }
 
   handleDateChange = (e) => {
@@ -59,29 +46,21 @@ class NewCallModal extends Component {
   }
 
   render() {
-    const {contentValue, dateValue, selectValue, errors} = this.state;
-    const {onClose, peopleArr} = this.props;
+    const {contentValue, dateValue} = this.state;
+    const {onClose, call} = this.props;
+    const {personName, date} = call
+    const friendlyDate = friendlyCall(date)
     return (
       <FullScreenModal
-        key={'newCallModal'}
+        key={'editCallModal'}
         onClose={onClose}
-        headerText={'Log a new call'}
+        headerText={`Edit Call`}
         closeIcon={'X'}
       >
+        <h5 style={{'margin-bottom': '10px'}}>
+          Edting call with {personName} from {friendlyDate}
+        </h5>
         <form className="call-modal-form" onSubmit={this.onSubmit}>
-          {
-            errors['personID'] &&
-            <div className="call-modal-error">{errors['personID']}</div>
-          }
-          <div className='call-label'>Who did you talk with?</div>
-          <select
-            className="call-input"
-            name='personID'
-            value={selectValue}
-            onChange={this.handleSelectChange}>
-            <option key='null-select' value={'-1'}></option>
-            {peopleArr.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </select>
           <div className='call-label'>When did you talk?</div>
           <input
             className="call-input"
@@ -105,4 +84,4 @@ class NewCallModal extends Component {
   }
 }
 
-export default NewCallModal
+export default EditCallModal

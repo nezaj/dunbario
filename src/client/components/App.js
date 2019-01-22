@@ -3,7 +3,7 @@ import './App.css';
 
 import PeopleView from './PeopleView'
 import CallsView from './CallsView'
-import { NewCallModal, NewPersonModal } from './modals'
+import { NewCallModal, EditCallModal, NewPersonModal } from './modals'
 import { CATEGORY_ORDER } from '../data'
 import { capitalize } from '../utils'
 
@@ -84,12 +84,12 @@ function updatePeople(people, updatedPerson) {
   return {...people, [updatedPerson.id]: updatedPerson}
 }
 
-function updateCalls(calls, updatedCall) {
-  return {...calls, [updatedCall.id]: updatedCall}
-}
-
 function updatePerson(person, options) {
   return {...person, ...options}
+}
+
+function updateCalls(calls, updatedCall) {
+  return {...calls, [updatedCall.id]: updatedCall}
 }
 
 /* Deletors */
@@ -110,6 +110,10 @@ function getPerson(people, personID) {
   return people[personID]
 }
 
+function getCall(people, personID, callID) {
+  return people[personID].calls[callID]
+}
+
 /* TODOS
  * (Handle loading/success/fail) Add enum for handling loading state on initial data fetch
 */
@@ -125,6 +129,7 @@ class App extends Component {
       displayNewCallModal: false,
       callsVisible: false,
       displayID: null,
+      editCallID: null,
     }
   }
 
@@ -146,8 +151,16 @@ class App extends Component {
     this.setState({displayNewCallModal: false})
   }
 
+  onCloseEditCall = () => {
+    this.setState({editCallID: null})
+  }
+
   onClickPersonRow = (displayID) => {
     this.setState({callsVisible: true, displayID})
+  }
+
+  onClickCallEdit = (editCallID) => {
+    this.setState({editCallID})
   }
 
   /* Actions */
@@ -187,7 +200,7 @@ class App extends Component {
     })
   }
 
-  onSubmitCallModal = ({personID, date, content}) => {
+  onSubmitNewCall = ({personID, date, content}) => {
     const {people} = this.state
 
     const person = getPerson(people, personID)
@@ -199,6 +212,20 @@ class App extends Component {
     this.setState({
       people: updatedPeople,
       displayNewCallModal: false,
+    })
+  }
+
+  onSubmitEditCall = ({personID, editedCall}) => {
+    const {people} = this.state
+
+    const person = getPerson(people, personID)
+    const calls = updateCalls(person.calls, editedCall)
+    const updatedPerson = updatePerson(person, {calls})
+    const updatedPeople = updatePeople(people, updatedPerson)
+
+    this.setState({
+      people: updatedPeople,
+      editCallID: null,
     })
   }
 
@@ -219,7 +246,8 @@ class App extends Component {
   render() {
     const {
       callsVisible,
-      displayID, displayNewPersonModal, displayNewCallModal,
+      displayNewPersonModal, displayNewCallModal,
+      displayID, editCallID,
       people
     } = this.state
     const peopleArr = Object.values(people)
@@ -244,14 +272,22 @@ class App extends Component {
             person={displayedPerson}
             onClickArchive={this.onArchive}
             onEditPersonName={this.onEditPersonName}
+            onClickCallEdit={this.onClickCallEdit}
             onCallDelete={this.onCallDelete}
           />
         </div>
         { displayNewCallModal &&
           <NewCallModal
             peopleArr={peopleArr}
-            onSubmitCallModal={this.onSubmitCallModal}
+            onSubmitNewCall={this.onSubmitNewCall}
             onClose={this.onCloseCallModal}
+          />
+        }
+        { editCallID &&
+          <EditCallModal
+            call={getCall(people, displayID, editCallID)}
+            onSubmitEditCall={this.onSubmitEditCall}
+            onClose={this.onCloseEditCall}
           />
         }
         { displayNewPersonModal &&

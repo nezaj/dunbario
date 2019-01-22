@@ -1,7 +1,4 @@
 ### Features
-Front-end
-* User can edit call (on front-end)
-
 Back-end
 * Hook-up data to memory-store on backend
 * Implement "bootstrap" on development start

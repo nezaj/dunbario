@@ -23,14 +23,14 @@
   margin-bottom: 5px;
 }
 
-.submit-new-call {
+.submit-call-modal {
   padding: 0.5em 1em;
   font-size: 1.5em;
   border-radius: 1em;
   background-color: lightGrey !important;
 }
 
-.submit-new-call:hover {
+.submit-call-modal:hover {
   cursor: pointer;
   background-color: grey !important;
 }

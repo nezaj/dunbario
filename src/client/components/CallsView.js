@@ -37,7 +37,11 @@ class CallsView extends Component {
   }
 
   render() {
-    const {isVisible, person, onClickArchive, onCallDelete} = this.props
+    const {
+      isVisible,
+      person,
+      onClickArchive, onClickCallEdit, onCallDelete
+    } = this.props
     const {isEditingName, editName} = this.state
     const {name, category, calls} = person
     const renderedCalls = Object.values(calls)
@@ -48,6 +52,7 @@ class CallsView extends Component {
           name={call.personName}
           date={call.date}
           content={call.content}
+          onClickCallEdit={() => onClickCallEdit(call.id)}
           onCallDelete={() => onCallDelete(person.id, call.id)}
         />
       )
@@ -125,7 +130,7 @@ class Call extends Component {
   }
 
   render() {
-    const {name, date, content, onCallDelete} = this.props
+    const {name, date, content, onCallDelete, onClickCallEdit} = this.props
     const {confirmDelete} = this.state
     return (
       <div className='call-container'>
@@ -133,11 +138,19 @@ class Call extends Component {
           <h3>Called {name} {friendlyCall(date)}</h3>
           <div className='call-buttons'>
             {!confirmDelete
-              ? <button
-                  className='call-button'
-                  onClick={this.displayConfirmDelete}>
-                  Delete
-                </button>
+              ?
+                <>
+                  <button
+                    className='call-button'
+                    onClick={this.displayConfirmDelete}>
+                    Delete
+                  </button>
+                  <button
+                    className='call-button'
+                    onClick={onClickCallEdit}>
+                    Edit
+                  </button>
+                </>
               :
                 <>
                   <button
