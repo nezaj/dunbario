@@ -21,7 +21,15 @@ class NewCallModal extends Component {
     const {onSubmitCallModal} = this.props
 
     const personID = e.target.personID.value
-    const date = e.target.date.value
+
+    // date input display values in UTC timezone but returns back timezone
+    // adjusted value. So we add back in our timezone offset so that the value
+    // of date matches what we selected in our form
+    const _dirty = new Date(e.target.date.value)
+    const date = new Date(_dirty.getTime() + _dirty.getTimezoneOffset() * 60000)
+    // console.log('_dirty', _dirty)
+    // console.log('date', date)
+
     const content = e.target.content.value
 
     let errors = {}
@@ -52,7 +60,7 @@ class NewCallModal extends Component {
 
   render() {
     const {contentValue, dateValue, selectValue, errors} = this.state;
-    const {onClose, people} = this.props;
+    const {onClose, peopleArr} = this.props;
     return (
       <FullScreenModal
         key={'newCallModal'}
@@ -72,7 +80,7 @@ class NewCallModal extends Component {
             value={selectValue}
             onChange={this.handleSelectChange}>
             <option key='null-select' value={'-1'}></option>
-            {people.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            {peopleArr.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <div className='call-label'>When did you talk?</div>
           <input

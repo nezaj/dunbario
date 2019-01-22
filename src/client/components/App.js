@@ -11,32 +11,47 @@ import { capitalize } from '../utils'
 let MAX_PERSON_ID = 0
 let MAX_CALL_ID = 0
 
+// Create some people
 const mom = createPerson('Mom', 'family')
 const gary = createPerson('Gary', 'family')
 const stepan = createPerson('stepan', 'friends')
+const initialPeople = [mom, gary, stepan].reduce((obj, p) => {
+  obj[p.id] = p
+  return obj
+}, {})
 
-const initialPeople = [mom, gary, stepan]
-const initialArchive = []
-
-const DEFAULT_CALL_CONTENT = 'No logged info on this call'
-const DUMMY_PERSON = {calls: []}
-
-// Add some intial calls
+// Create some calls
 const momCall_1 = createCall(
-  initialPeople, mom.id, '12/26/18', 'Chill call, nothing special'
+  initialPeople, mom.id, new Date('12/26/18'), 'Chill call, nothing special'
 )
 const momCall_2 = createCall(
-  initialPeople, mom.id, '12/29/18', 'Talked for an hour'
+  initialPeople, mom.id, new Date('12/29/18'), 'Talked for an hour'
 )
 const momCall_3 = createCall(
-  initialPeople, mom.id, '01/01/19', 'New years chat!'
+  initialPeople, mom.id, new Date('01/01/19'), 'New years chat!'
 )
-mom.calls = [momCall_1, momCall_2, momCall_3]
+mom.calls = [momCall_1, momCall_2, momCall_3].reduce((obj, c) => {
+  obj[c.id] = c
+  return obj
+}, {})
+
+// Store it all
+const initialData = {
+  people: initialPeople,
+  archive: {},
+}
+
+/* Defaults */
+const DEFAULT_CALL_CONTENT = 'No logged info on this call'
+const DUMMY_PERSON = {calls: {}}
+
 
 /* Creators */
 function getOrCreateCategory(name) {
   const clean = capitalize(name)
-  if (!CATEGORY_ORDER[clean]) { CATEGORY_ORDER[clean] = Object.keys(CATEGORY_ORDER).length + 1 }
+  if (!CATEGORY_ORDER[clean]) {
+    CATEGORY_ORDER[clean] = Object.keys(CATEGORY_ORDER).length + 1
+  }
   return clean
 }
 
@@ -50,22 +65,27 @@ function createPerson(name, category) {
 }
 
 function createCall(people, personID, date, content) {
-  const personName = getPerson(personID, people).name
+  const personName = getPerson(people, personID).name
   return {
     id: ++MAX_CALL_ID,
     personID,
     personName,
-    date: (date && new Date(date)) || new Date(),
+    date,
     content: content || DEFAULT_CALL_CONTENT,
   }
 }
 
 /* Updators */
-function updatePeople(people, idx, updatedPerson) {
-  return []
-    .concat(people.slice(0, idx))
-    .concat(updatedPerson)
-    .concat(people.slice(idx + 1))
+function updateArchive(archive, updatedPerson) {
+  return {...archive, [updatedPerson.id]: updatedPerson}
+}
+
+function updatePeople(people, updatedPerson) {
+  return {...people, [updatedPerson.id]: updatedPerson}
+}
+
+function updateCalls(calls, updatedCall) {
+  return {...calls, [updatedCall.id]: updatedCall}
 }
 
 function updatePerson(person, options) {
@@ -73,16 +93,21 @@ function updatePerson(person, options) {
 }
 
 /* Deletors */
-function archivePeople(people, personIdx) {
-  return []
-    .concat(people.slice(0, personIdx))
-    .concat(people.slice(personIdx + 1))
+function archivePeople(people, personID) {
+  const clone = {...people}
+  delete clone[personID]
+  return clone
+}
+
+function deleteCall(calls, callID) {
+  const clone = {...calls}
+  delete clone[callID]
+  return clone
 }
 
 /* Helpers */
-
-function getPerson(personID, people) {
-  return people.find(p => p.id === personID)
+function getPerson(people, personID) {
+  return people[personID]
 }
 
 /* TODOS
@@ -92,9 +117,10 @@ function getPerson(personID, people) {
 class App extends Component {
   constructor(props) {
     super(props)
+    const {people, archive} = initialData
     this.state = {
-      archived: initialArchive,
-      people: initialPeople,
+      people,
+      archive,
       displayNewPersonModal: false,
       displayNewCallModal: false,
       callsVisible: false,
@@ -126,54 +152,49 @@ class App extends Component {
 
   /* Actions */
 
-  onArchive = (id) => {
-    const {archived, people} = this.state
-    const personIdx = people.map(p => p.id).indexOf(id)
-    const person = people[personIdx]
+  onArchive = (personID) => {
+    const {archive, people} = this.state
 
-    const newPeople = archivePeople(people, personIdx)
+    const person = people[personID]
+    const newPeople = archivePeople(people, personID)
+    const newArchive = updateArchive(archive, person)
 
     this.setState({
-      archived: archived.concat(person),
+      archive: newArchive,
       callsVisible: false,
       displayID: null,
       people: newPeople,
     })
   }
 
-  onEditPersonName = (id, newName) => {
+  onEditPersonName = (personID, newName) => {
     const {people} = this.state
-    const idx = people.map(p => p.id).indexOf(id)
-    const person = people[idx]
 
+    const person = people[personID]
     const updatedPerson = updatePerson(person, {name: newName})
-    const newPeople = updatePeople(people, idx, updatedPerson)
+    const newPeople = updatePeople(people, updatedPerson)
 
     this.setState({people: newPeople})
   }
 
   onSubmitPersonModal = ({personName, personCategory}) => {
     const {people} = this.state
-    const newPerson = createPerson(personName, null, personCategory)
+    const newPerson = createPerson(personName, personCategory)
+    const newPeople = updatePeople(people, newPerson)
     this.setState({
       displayNewPersonModal: false,
-      people: people.concat(newPerson),
+      people: newPeople,
     })
   }
 
   onSubmitCallModal = ({personID, date, content}) => {
     const {people} = this.state
-    const personIdx = people.map(p => p.id).indexOf(parseInt(personID))
-    const person = people[personIdx]
 
+    const person = getPerson(people, personID)
     const newCall = createCall(people, person.id, date, content)
-    const updatedPerson = updatePerson(
-      person,
-      {
-        calls: person.calls.concat(newCall),
-      }
-    )
-    const updatedPeople = updatePeople(people, personIdx, updatedPerson)
+    const calls = updateCalls(person.calls, newCall)
+    const updatedPerson = updatePerson(person, {calls})
+    const updatedPeople = updatePeople(people, updatedPerson)
 
     this.setState({
       people: updatedPeople,
@@ -183,18 +204,11 @@ class App extends Component {
 
   onCallDelete = (personID, callID) => {
     const {people} = this.state
-    const personIdx = people.map(p => p.id).indexOf(parseInt(personID))
-    const person = people[personIdx]
-    const callIdx = person.calls.map(c => c.id).indexOf(parseInt(callID))
 
-    // remove call from personCalls
-    const newCalls = []
-      .concat(person.calls.slice(0, callIdx))
-      .concat(person.calls.slice(callIdx + 1))
-
-    // update person
-    const updatedPerson = updatePerson(person, {calls: newCalls})
-    const updatedPeople = updatePeople(people, personIdx, updatedPerson)
+    const person = getPerson(people, personID)
+    const calls = deleteCall(person.calls, callID)
+    const updatedPerson = updatePerson(person, {calls})
+    const updatedPeople = updatePeople(people, updatedPerson)
 
     this.setState({
       displayDeleteCallModal: false,
@@ -208,7 +222,8 @@ class App extends Component {
       displayID, displayNewPersonModal, displayNewCallModal,
       people
     } = this.state
-    const displayedPerson = getPerson(displayID, people) || DUMMY_PERSON
+    const peopleArr = Object.values(people)
+    const displayedPerson = getPerson(people, displayID) || DUMMY_PERSON
     return (
       <div className="app-container">
         <button
@@ -219,7 +234,7 @@ class App extends Component {
         </button>
         <div className="view-container">
           <PeopleView
-            people={people}
+            peopleArr={peopleArr}
             onClickNewPerson={this.onClickNewPerson}
             onClickPersonRow={this.onClickPersonRow}
           />
@@ -234,9 +249,9 @@ class App extends Component {
         </div>
         { displayNewCallModal &&
           <NewCallModal
+            peopleArr={peopleArr}
             onSubmitCallModal={this.onSubmitCallModal}
             onClose={this.onCloseCallModal}
-            people={people}
           />
         }
         { displayNewPersonModal &&

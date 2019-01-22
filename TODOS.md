@@ -1,6 +1,5 @@
 ### Features
 Front-end
-* Add updator for personCalls
 * User can edit call (on front-end)
 
 Back-end

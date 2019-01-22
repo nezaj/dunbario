@@ -40,7 +40,7 @@ class CallsView extends Component {
     const {isVisible, person, onClickArchive, onCallDelete} = this.props
     const {isEditingName, editName} = this.state
     const {name, category, calls} = person
-    const renderedCalls = calls
+    const renderedCalls = Object.values(calls)
       .sort((a, b) => b.date - a.date)
       .map(call =>
         <Call
