@@ -6,7 +6,7 @@ NODEMON = $(NODE_BIN)/nodemon
 
 .PHONY: \
 	build \
-	dev-client dev-server prod-server \
+	dev-client server \
 	check lint test-client \
 	deploy
 
@@ -18,13 +18,9 @@ dev-client:
 	@echo "Starting client dev-server..."
 	npm start
 
-dev-server:
+server:
 	@echo "Starting server dev-server..."
 	$(NODEMON) src/server/index.js
-
-prod-server:
-	@echo "Starting production optimized server..."
-	node src/server/index.js --env prod
 
 check:
 	$(MAKE) lint

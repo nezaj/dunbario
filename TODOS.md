@@ -4,6 +4,9 @@ Back-end
 * Implement "bootstrap" on development start
 * Implement auth
 * Add postgres
+* Set-up pingdom
+* Implement password reset
+* Implement stripe integration
 
 ### Misc
 * Add prettier?
