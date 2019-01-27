@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 /* Entry-point for our express server */
 
 const path = require('path')
@@ -8,7 +9,7 @@ const express = require('express')
 const morgan = require('morgan')
 const program = require('commander')
 
-function main (opts) {
+function main() {
   // Initialize app
   let app = express()
 
@@ -20,7 +21,7 @@ function main (opts) {
   app.use(cors())
 
   // Configure static directory
-  const publicDir = opts.env === 'dev' ? 'public' : 'build'
+  const publicDir = 'build'
   const staticDir = path.join(__dirname, '..', '..', publicDir)
   app.use(express.static(staticDir))
 
@@ -31,7 +32,7 @@ function main (opts) {
   app.use(bodyParser.json())
 
   // Make all routes serve index.html so our front-end app can take over
-  app.use('/*', function (req, res) {
+  app.get('/*', function(req, res) {
     res.sendFile(__dirname, 'index.html')
   })
 
@@ -45,11 +46,9 @@ function main (opts) {
 
 if (require.main === module) {
   program
-  .description('Info: Start the backend webserver')
-  .usage(': node server.py [options]')
-  .option('-e --env <name>',
-          'specify env (dev|prod) [dev]', 'env')
-  .parse(process.argv)
+    .description('Info: Start the backend webserver')
+    .usage(': node server.py [options]')
+    .parse(process.argv)
 
   main(program)
 }

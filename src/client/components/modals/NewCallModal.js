@@ -16,9 +16,9 @@ class NewCallModal extends Component {
     }
   }
 
-  onSubmit = (e) => {
+  onSubmit = e => {
     e.preventDefault()
-    const {onSubmitNewCall} = this.props
+    const { onSubmitNewCall } = this.props
 
     const personID = e.target.personID.value
 
@@ -33,10 +33,12 @@ class NewCallModal extends Component {
     const content = e.target.content.value
 
     let errors = {}
-    if (personID === '-1') {errors['personID'] = 'Please select a person'}
+    if (personID === '-1') {
+      errors['personID'] = 'Please select a person'
+    }
 
     if (Object.keys(errors).length > 0) {
-      this.setState({errors})
+      this.setState({ errors })
     } else {
       onSubmitNewCall({
         personID,
@@ -46,21 +48,21 @@ class NewCallModal extends Component {
     }
   }
 
-  handleDateChange = (e) => {
-    this.setState({dateValue: e.target.value})
+  handleDateChange = e => {
+    this.setState({ dateValue: e.target.value })
   }
 
-  handleSelectChange = (e) => {
-    this.setState({selectValue: e.target.value})
+  handleSelectChange = e => {
+    this.setState({ selectValue: e.target.value })
   }
 
-  handleContentChange = (e) => {
-    this.setState({contentValue: e.target.value})
+  handleContentChange = e => {
+    this.setState({ contentValue: e.target.value })
   }
 
   render() {
-    const {contentValue, dateValue, selectValue, errors} = this.state;
-    const {onClose, peopleArr} = this.props;
+    const { contentValue, dateValue, selectValue, errors } = this.state
+    const { onClose, peopleArr } = this.props
     return (
       <FullScreenModal
         key={'newCallModal'}
@@ -69,36 +71,42 @@ class NewCallModal extends Component {
         closeIcon={'X'}
       >
         <form className="call-modal-form" onSubmit={this.onSubmit}>
-          {
-            errors['personID'] &&
+          {errors['personID'] && (
             <div className="call-modal-error">{errors['personID']}</div>
-          }
-          <div className='call-label'>Who did you talk with?</div>
+          )}
+          <div className="call-label">Who did you talk with?</div>
           <select
             className="call-input"
-            name='personID'
+            name="personID"
             value={selectValue}
-            onChange={this.handleSelectChange}>
-            <option key='null-select' value={'-1'}></option>
-            {peopleArr.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            onChange={this.handleSelectChange}
+          >
+            <option key="null-select" value={'-1'} />
+            {peopleArr.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
           </select>
-          <div className='call-label'>When did you talk?</div>
+          <div className="call-label">When did you talk?</div>
           <input
             className="call-input"
-            type='date'
-            name='date'
+            type="date"
+            name="date"
             value={dateValue}
             onChange={this.handleDateChange}
           />
-          <div className='call-label'>What did you talk about?</div>
+          <div className="call-label">What did you talk about?</div>
           <textarea
             className="call-input"
-            name='content'
+            name="content"
             rows={8}
             value={contentValue}
             onChange={this.handleContentChange}
           />
-          <button type="submit" className="submit-call-modal">Submit</button>
+          <button type="submit" className="submit-call-modal">
+            Submit
+          </button>
         </form>
       </FullScreenModal>
     )

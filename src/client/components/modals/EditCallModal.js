@@ -15,9 +15,9 @@ class EditCallModal extends Component {
     }
   }
 
-  onSubmit = (e) => {
+  onSubmit = e => {
     e.preventDefault()
-    const {onSubmitEditCall, call} = this.props
+    const { onSubmitEditCall, call } = this.props
     const personID = call.personID
 
     // date input display values in UTC timezone but returns back timezone
@@ -29,26 +29,26 @@ class EditCallModal extends Component {
     // console.log('date', date)
 
     const content = e.target.content.value
-    const editedCall = {...call, date, content}
-    onSubmitEditCall({personID, editedCall})
+    const editedCall = { ...call, date, content }
+    onSubmitEditCall({ personID, editedCall })
   }
 
-  handleDateChange = (e) => {
-    this.setState({dateValue: e.target.value})
+  handleDateChange = e => {
+    this.setState({ dateValue: e.target.value })
   }
 
-  handleSelectChange = (e) => {
-    this.setState({selectValue: e.target.value})
+  handleSelectChange = e => {
+    this.setState({ selectValue: e.target.value })
   }
 
-  handleContentChange = (e) => {
-    this.setState({contentValue: e.target.value})
+  handleContentChange = e => {
+    this.setState({ contentValue: e.target.value })
   }
 
   render() {
-    const {contentValue, dateValue} = this.state;
-    const {onClose, call} = this.props;
-    const {personName, date} = call
+    const { contentValue, dateValue } = this.state
+    const { onClose, call } = this.props
+    const { personName, date } = call
     const friendlyDate = friendlyCall(date)
     return (
       <FullScreenModal
@@ -57,27 +57,29 @@ class EditCallModal extends Component {
         headerText={`Edit Call`}
         closeIcon={'X'}
       >
-        <h5 style={{'margin-bottom': '10px'}}>
+        <h5 style={{ 'margin-bottom': '10px' }}>
           Edting call with {personName} from {friendlyDate}
         </h5>
         <form className="call-modal-form" onSubmit={this.onSubmit}>
-          <div className='call-label'>When did you talk?</div>
+          <div className="call-label">When did you talk?</div>
           <input
             className="call-input"
-            type='date'
-            name='date'
+            type="date"
+            name="date"
             value={dateValue}
             onChange={this.handleDateChange}
           />
-          <div className='call-label'>What did you talk about?</div>
+          <div className="call-label">What did you talk about?</div>
           <textarea
             className="call-input"
-            name='content'
+            name="content"
             rows={8}
             value={contentValue}
             onChange={this.handleContentChange}
           />
-          <button type="submit" className="submit-call-modal">Submit</button>
+          <button type="submit" className="submit-call-modal">
+            Submit
+          </button>
         </form>
       </FullScreenModal>
     )

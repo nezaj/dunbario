@@ -3,4 +3,4 @@ import NewCallModal from './NewCallModal.js'
 import EditCallModal from './EditCallModal.js'
 import NewPersonModal from './NewPersonModal.js'
 
-export {FullScreenModal, NewCallModal, EditCallModal, NewPersonModal}
+export { FullScreenModal, NewCallModal, EditCallModal, NewPersonModal }

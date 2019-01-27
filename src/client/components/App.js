@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import './App.css';
+// @format
+import React, { Component } from 'react'
+import './App.css'
 
 import PeopleView from './PeopleView'
 import CallsView from './CallsView'
@@ -22,13 +23,22 @@ const initialPeople = [mom, gary, stepan].reduce((obj, p) => {
 
 // Create some calls
 const momCall_1 = createCall(
-  initialPeople, mom.id, new Date('12/26/18'), 'Chill call, nothing special'
+  initialPeople,
+  mom.id,
+  new Date('12/26/18'),
+  'Chill call, nothing special'
 )
 const momCall_2 = createCall(
-  initialPeople, mom.id, new Date('12/29/18'), 'Talked for an hour'
+  initialPeople,
+  mom.id,
+  new Date('12/29/18'),
+  'Talked for an hour'
 )
 const momCall_3 = createCall(
-  initialPeople, mom.id, new Date('01/01/19'), 'New years chat!'
+  initialPeople,
+  mom.id,
+  new Date('01/01/19'),
+  'New years chat!'
 )
 mom.calls = [momCall_1, momCall_2, momCall_3].reduce((obj, c) => {
   obj[c.id] = c
@@ -43,8 +53,7 @@ const initialData = {
 
 /* Defaults */
 const DEFAULT_CALL_CONTENT = 'No logged info on this call'
-const DUMMY_PERSON = {calls: {}}
-
+const DUMMY_PERSON = { calls: {} }
 
 /* Creators */
 function getOrCreateCategory(name) {
@@ -77,30 +86,30 @@ function createCall(people, personID, date, content) {
 
 /* Updators */
 function updateArchive(archive, updatedPerson) {
-  return {...archive, [updatedPerson.id]: updatedPerson}
+  return { ...archive, [updatedPerson.id]: updatedPerson }
 }
 
 function updatePeople(people, updatedPerson) {
-  return {...people, [updatedPerson.id]: updatedPerson}
+  return { ...people, [updatedPerson.id]: updatedPerson }
 }
 
 function updatePerson(person, options) {
-  return {...person, ...options}
+  return { ...person, ...options }
 }
 
 function updateCalls(calls, updatedCall) {
-  return {...calls, [updatedCall.id]: updatedCall}
+  return { ...calls, [updatedCall.id]: updatedCall }
 }
 
 /* Deletors */
 function archivePeople(people, personID) {
-  const clone = {...people}
+  const clone = { ...people }
   delete clone[personID]
   return clone
 }
 
 function deleteCall(calls, callID) {
-  const clone = {...calls}
+  const clone = { ...calls }
   delete clone[callID]
   return clone
 }
@@ -116,12 +125,12 @@ function getCall(people, personID, callID) {
 
 /* TODOS
  * (Handle loading/success/fail) Add enum for handling loading state on initial data fetch
-*/
+ */
 
 class App extends Component {
   constructor(props) {
     super(props)
-    const {people, archive} = initialData
+    const { people, archive } = initialData
     this.state = {
       people,
       archive,
@@ -136,37 +145,37 @@ class App extends Component {
   /* UI Handlers */
 
   onClickNewPerson = () => {
-    this.setState({displayNewPersonModal: true})
+    this.setState({ displayNewPersonModal: true })
   }
 
   onClickNewCall = () => {
-    this.setState({displayNewCallModal: true})
+    this.setState({ displayNewCallModal: true })
   }
 
   onClosePersonModal = () => {
-    this.setState({displayNewPersonModal: false})
+    this.setState({ displayNewPersonModal: false })
   }
 
   onCloseCallModal = () => {
-    this.setState({displayNewCallModal: false})
+    this.setState({ displayNewCallModal: false })
   }
 
   onCloseEditCall = () => {
-    this.setState({editCallID: null})
+    this.setState({ editCallID: null })
   }
 
-  onClickPersonRow = (displayID) => {
-    this.setState({callsVisible: true, displayID})
+  onClickPersonRow = displayID => {
+    this.setState({ callsVisible: true, displayID })
   }
 
-  onClickCallEdit = (editCallID) => {
-    this.setState({editCallID})
+  onClickCallEdit = editCallID => {
+    this.setState({ editCallID })
   }
 
   /* Actions */
 
-  onArchive = (personID) => {
-    const {archive, people} = this.state
+  onArchive = personID => {
+    const { archive, people } = this.state
 
     const person = people[personID]
     const newPeople = archivePeople(people, personID)
@@ -181,17 +190,17 @@ class App extends Component {
   }
 
   onEditPersonName = (personID, newName) => {
-    const {people} = this.state
+    const { people } = this.state
 
     const person = people[personID]
-    const updatedPerson = updatePerson(person, {name: newName})
+    const updatedPerson = updatePerson(person, { name: newName })
     const newPeople = updatePeople(people, updatedPerson)
 
-    this.setState({people: newPeople})
+    this.setState({ people: newPeople })
   }
 
-  onSubmitPersonModal = ({personName, personCategory}) => {
-    const {people} = this.state
+  onSubmitPersonModal = ({ personName, personCategory }) => {
+    const { people } = this.state
     const newPerson = createPerson(personName, personCategory)
     const newPeople = updatePeople(people, newPerson)
     this.setState({
@@ -200,13 +209,13 @@ class App extends Component {
     })
   }
 
-  onSubmitNewCall = ({personID, date, content}) => {
-    const {people} = this.state
+  onSubmitNewCall = ({ personID, date, content }) => {
+    const { people } = this.state
 
     const person = getPerson(people, personID)
     const newCall = createCall(people, person.id, date, content)
     const calls = updateCalls(person.calls, newCall)
-    const updatedPerson = updatePerson(person, {calls})
+    const updatedPerson = updatePerson(person, { calls })
     const updatedPeople = updatePeople(people, updatedPerson)
 
     this.setState({
@@ -215,12 +224,12 @@ class App extends Component {
     })
   }
 
-  onSubmitEditCall = ({personID, editedCall}) => {
-    const {people} = this.state
+  onSubmitEditCall = ({ personID, editedCall }) => {
+    const { people } = this.state
 
     const person = getPerson(people, personID)
     const calls = updateCalls(person.calls, editedCall)
-    const updatedPerson = updatePerson(person, {calls})
+    const updatedPerson = updatePerson(person, { calls })
     const updatedPeople = updatePeople(people, updatedPerson)
 
     this.setState({
@@ -230,11 +239,11 @@ class App extends Component {
   }
 
   onCallDelete = (personID, callID) => {
-    const {people} = this.state
+    const { people } = this.state
 
     const person = getPerson(people, personID)
     const calls = deleteCall(person.calls, callID)
-    const updatedPerson = updatePerson(person, {calls})
+    const updatedPerson = updatePerson(person, { calls })
     const updatedPeople = updatePeople(people, updatedPerson)
 
     this.setState({
@@ -246,18 +255,18 @@ class App extends Component {
   render() {
     const {
       callsVisible,
-      displayNewPersonModal, displayNewCallModal,
-      displayID, editCallID,
-      people
+      displayNewPersonModal,
+      displayNewCallModal,
+      displayID,
+      editCallID,
+      people,
     } = this.state
+
     const peopleArr = Object.values(people)
     const displayedPerson = getPerson(people, displayID) || DUMMY_PERSON
     return (
       <div className="app-container">
-        <button
-          className="log-call"
-          onClick={this.onClickNewCall}
-        >
+        <button className="log-call" onClick={this.onClickNewCall}>
           + Log Call
         </button>
         <div className="view-container">
@@ -276,33 +285,31 @@ class App extends Component {
             onCallDelete={this.onCallDelete}
           />
         </div>
-        { displayNewCallModal &&
+        {displayNewCallModal && (
           <NewCallModal
             peopleArr={peopleArr}
             onSubmitNewCall={this.onSubmitNewCall}
             onClose={this.onCloseCallModal}
           />
-        }
-        { editCallID &&
+        )}
+        {editCallID && (
           <EditCallModal
             call={getCall(people, displayID, editCallID)}
             onSubmitEditCall={this.onSubmitEditCall}
             onClose={this.onCloseEditCall}
           />
-        }
-        { displayNewPersonModal &&
+        )}
+        {displayNewPersonModal && (
           <NewPersonModal
             onSubmitPersonModal={this.onSubmitPersonModal}
             onClose={this.onClosePersonModal}
           />
-        }
+        )}
       </div>
-    );
+    )
   }
 }
 
 export default App
 
-export {
-  CATEGORY_ORDER
-}
+export { CATEGORY_ORDER }
